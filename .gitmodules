@@ -1,0 +1,3 @@
+[submodule "antigravityNEU"]
+	path = antigravityNEU
+	url = https://github.com/Simon-Rohrer/Antigravity.git
