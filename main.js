@@ -1,3 +1,4 @@
+//TODO ENTFERNE
 // Navigation - Wait for DOM to be ready (including dynamically loaded header)
 document.addEventListener('DOMContentLoaded', () => {
     // Small delay to ensure components are loaded
@@ -21,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Hamburger Animation
+                //Test
+
                 hamburger.classList.toggle('toggle');
             });
 

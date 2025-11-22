@@ -1,3 +1,4 @@
+<!-- TODO ENTFERNE -->
 # Manfred Rohrer Band Website
 
 Moderne, responsive Website für die Manfred Rohrer Band mit Hero-Slider, Band-Mitgliedern, Audio-Player, Galerie und Booking-Formular.
