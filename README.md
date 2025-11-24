@@ -39,7 +39,7 @@ gemini/
 │   ├── footer.html         # Footer
 │   └── loader.js           # Komponenten-Loader
 └── assets/                 # Bilder & Audio
-    ├── Band gesamt/
+    ├── Band_gesamt/
     ├── Bandmitglieder/
     └── audio/
 ```
