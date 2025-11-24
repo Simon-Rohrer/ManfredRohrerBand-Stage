@@ -435,42 +435,50 @@ if (bookingForm) {
     });
 }
 // Member Slider Logic
-window.prevMemberSlide = function (btn) {
-    const card = btn.closest('.member-img');
-    const images = card.querySelectorAll('img');
-    let activeIndex = 0;
+// Member Slider Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const prevBtns = document.querySelectorAll('.member-slider-prev');
+    const nextBtns = document.querySelectorAll('.member-slider-next');
 
-    images.forEach((img, index) => {
-        if (img.classList.contains('active')) {
-            activeIndex = index;
-            img.classList.remove('active');
+    function updateSlide(btn, direction) {
+        const card = btn.closest('.member-img');
+        const images = card.querySelectorAll('img');
+        let activeIndex = 0;
+
+        images.forEach((img, index) => {
+            if (img.classList.contains('active')) {
+                activeIndex = index;
+                img.classList.remove('active');
+            }
+        });
+
+        let newIndex;
+        if (direction === 'prev') {
+            newIndex = activeIndex - 1;
+            if (newIndex < 0) {
+                newIndex = images.length - 1;
+            }
+        } else {
+            newIndex = activeIndex + 1;
+            if (newIndex >= images.length) {
+                newIndex = 0;
+            }
         }
-    });
 
-    let newIndex = activeIndex - 1;
-    if (newIndex < 0) {
-        newIndex = images.length - 1;
+        images[newIndex].classList.add('active');
     }
 
-    images[newIndex].classList.add('active');
-};
-
-window.nextMemberSlide = function (btn) {
-    const card = btn.closest('.member-img');
-    const images = card.querySelectorAll('img');
-    let activeIndex = 0;
-
-    images.forEach((img, index) => {
-        if (img.classList.contains('active')) {
-            activeIndex = index;
-            img.classList.remove('active');
-        }
+    prevBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            updateSlide(btn, 'prev');
+        });
     });
 
-    let newIndex = activeIndex + 1;
-    if (newIndex >= images.length) {
-        newIndex = 0;
-    }
-
-    images[newIndex].classList.add('active');
-};
+    nextBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            updateSlide(btn, 'next');
+        });
+    });
+});

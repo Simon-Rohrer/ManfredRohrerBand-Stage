@@ -172,10 +172,27 @@ img {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-main);
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--text-main);
+    transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
     color: var(--text-muted);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .hamburger {
