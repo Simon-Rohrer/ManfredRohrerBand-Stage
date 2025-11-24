@@ -434,3 +434,43 @@ if (bookingForm) {
             });
     });
 }
+// Member Slider Logic
+window.prevMemberSlide = function (btn) {
+    const card = btn.closest('.member-img');
+    const images = card.querySelectorAll('img');
+    let activeIndex = 0;
+
+    images.forEach((img, index) => {
+        if (img.classList.contains('active')) {
+            activeIndex = index;
+            img.classList.remove('active');
+        }
+    });
+
+    let newIndex = activeIndex - 1;
+    if (newIndex < 0) {
+        newIndex = images.length - 1;
+    }
+
+    images[newIndex].classList.add('active');
+};
+
+window.nextMemberSlide = function (btn) {
+    const card = btn.closest('.member-img');
+    const images = card.querySelectorAll('img');
+    let activeIndex = 0;
+
+    images.forEach((img, index) => {
+        if (img.classList.contains('active')) {
+            activeIndex = index;
+            img.classList.remove('active');
+        }
+    });
+
+    let newIndex = activeIndex + 1;
+    if (newIndex >= images.length) {
+        newIndex = 0;
+    }
+
+    images[newIndex].classList.add('active');
+};
