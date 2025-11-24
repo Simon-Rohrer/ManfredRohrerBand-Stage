@@ -374,53 +374,63 @@ if (bookingForm) {
     bookingForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
         // 1. Gather Data
         let eventType = document.getElementById('event-type').value;
         if (eventType === 'other') {
             eventType = `Sonstiges: ${document.getElementById('other-event').value}`;
         }
 
-        const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
+        const templateParams = {
+            from_name: document.getElementById('name').value,
+            from_email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
-            eventDate: document.getElementById('event-date').value,
-            eventType: eventType,
+            event_date: document.getElementById('event-date').value,
+            event_type: eventType,
             message: document.getElementById('message').value,
-            recipient: 'test@test.de' // Placeholder email
+            to_email: 'SImon.rohrer04@web.de'
         };
 
-        // 2. Simulate Sending (Console Log)
-        console.group('📧 Sending Email...');
-        console.log('To:', formData.recipient);
-        console.log('Payload:', formData);
-        console.groupEnd();
-
-        // 3. Visual Feedback
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-
+        // 2. Visual Feedback - Loading
         submitBtn.textContent = 'WIRD GESENDET...';
         submitBtn.disabled = true;
 
-        // Simulate network delay
-        setTimeout(() => {
-            submitBtn.textContent = 'ANFRAGE GESENDET! ✓';
-            submitBtn.style.backgroundColor = '#4CAF50'; // Green success color
-            submitBtn.style.borderColor = '#4CAF50';
-            submitBtn.style.color = '#fff';
+        // 3. Send Email via EmailJS
+        emailjs.send('service_9v57ieh', 'template_k0cb54w', templateParams)
+            .then(() => {
+                // Success
+                submitBtn.textContent = 'ANFRAGE GESENDET! ✓';
+                submitBtn.style.backgroundColor = '#4CAF50';
+                submitBtn.style.borderColor = '#4CAF50';
+                submitBtn.style.color = '#fff';
 
-            // Reset form
-            bookingForm.reset();
+                bookingForm.reset();
 
-            // Reset button after 3 seconds
-            setTimeout(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = '';
-                submitBtn.style.borderColor = '';
-                submitBtn.style.color = '';
-            }, 3000);
-        }, 1500);
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '';
+                    submitBtn.style.borderColor = '';
+                    submitBtn.style.color = '';
+                }, 3000);
+            })
+            .catch((error) => {
+                // Error
+                console.error('FAILED...', error);
+                submitBtn.textContent = 'FEHLER BEIM SENDEN';
+                submitBtn.style.backgroundColor = '#f44336';
+                submitBtn.style.borderColor = '#f44336';
+
+                alert('Es gab einen Fehler beim Senden der Nachricht. Bitte versuchen Sie es später erneut oder schreiben Sie uns direkt eine E-Mail.');
+
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '';
+                    submitBtn.style.borderColor = '';
+                }, 3000);
+            });
     });
 }
