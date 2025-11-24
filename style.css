@@ -142,13 +142,14 @@ img {
 .logo a {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     text-decoration: none;
     color: var(--text-main);
 }
 
 .logo img {
-    max-height: 50px;
+    max-height: 40px;
+    /* Reduced size */
     width: auto;
     display: block;
 }
@@ -970,6 +971,8 @@ img {
 .full-width {
     width: 100%;
 }
+
+
 
 .cta-btn.full-width {
     width: 100%;
