@@ -21,6 +21,7 @@ Dann im Browser öffnen: **http://localhost:8000**
 # Prozess finden
 lsof -i :8000
 
+test neue Version
 # Prozess beenden (ersetze 27671 mit der angezeigten PID)
 kill -9 27671
 ```
