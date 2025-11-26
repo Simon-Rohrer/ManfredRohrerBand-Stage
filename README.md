@@ -18,34 +18,31 @@ python3 -m http.server 8000
 
 ### Veröffentlichung (Deployment)
 
-Der Ordner `src/frontend` ist deine fertige Webseite.
+Der gesamte Projektordner ist deine fertige Webseite.
 Lade den **Inhalt** dieses Ordners auf deinen Webserver oder GitHub Pages hoch.
 
 ## 📁 Projektstruktur
 
-Das Projekt ist in Frontend und Backend unterteilt, wobei aktuell der Fokus auf dem Frontend liegt.
+Das Projekt hat eine flache Struktur:
 
 ```
 manfredrohrerband/
-├── src/
-│   ├── frontend/              # Hauptordner der Webseite
-│   │   ├── index.html         # Startseite
-│   │   ├── impressum.html     # Impressum
-│   │   ├── datenschutz.html   # Datenschutz
-│   │   ├── assets/            # Medien (Bilder, Audio, Video)
-│   │   │   ├── images/
-│   │   │   │   ├── bandPhotos/  # Bandfotos
-│   │   │   │   ├── members/     # Mitgliederfotos
-│   │   │   │   └── logo/        # Logos
-│   │   │   ├── audio/         # MP3 Dateien
-│   │   │   └── video/         # Videodateien
-│   │   ├── components/        # Wiederverwendbare HTML-Teile
-│   │   │   ├── header.html    # Navigation
-│   │   │   └── footer.html    # Footer
-│   │   ├── styles/            # CSS Stylesheets
-│   │   └── scripts/           # JavaScript Logik
-│   └── backend/               # Platzhalter für Backend-Logik
-└── README.md                  # Diese Datei
+├── index.html         # Startseite
+├── impressum.html     # Impressum
+├── datenschutz.html   # Datenschutz
+├── assets/            # Medien (Bilder, Audio, Video)
+│   ├── images/
+│   │   ├── bandPhotos/  # Bandfotos
+│   │   ├── members/     # Mitgliederfotos
+│   │   └── logo/        # Logos
+│   ├── audio/         # MP3 Dateien
+│   └── video/         # Videodateien
+├── components/        # Wiederverwendbare HTML-Teile
+│   ├── header.html    # Navigation
+│   └── footer.html    # Footer
+├── styles/            # CSS Stylesheets
+├── scripts/           # JavaScript Logik
+└── README.md          # Diese Datei
 ```
 
 ## ✨ Features

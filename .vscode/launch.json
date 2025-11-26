@@ -9,7 +9,7 @@
             "args": [
                 "8000"
             ], // Port 8000
-            "cwd": "${workspaceFolder}/src/frontend",
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "serverReadyAction": {
                 // NEU: Dieser Pattern nutzt einen Capture Group (\\d+)
