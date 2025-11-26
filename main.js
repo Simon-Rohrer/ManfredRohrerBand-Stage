@@ -1,54 +1,78 @@
-//TODO ENTFERNE
-// Navigation - Wait for DOM to be ready (including dynamically loaded header)
 const service_id = "service_cxgpf5t";
 const template_id = "template_k0cb54w";
 
-function initNavigation() {
-    const hamburger = document.querySelector('.hamburger');
+// Funktion zum Zurücksetzen der Link-Animationen
+function resetLinkAnimations(links) {
+    links.forEach(link => {
+        link.style.animation = '';
+    });
+}
+
+// Funktion zum Schließen des Menüs
+function closeMenu() {
     const navLinks = document.querySelector('.nav-links');
+    const hamburger = document.querySelector('.hamburger');
     const links = document.querySelectorAll('.nav-links li');
 
-    if (hamburger && navLinks && links.length > 0) {
-        // Remove existing listeners to prevent duplicates if called multiple times
-        const newHamburger = hamburger.cloneNode(true);
-        hamburger.parentNode.replaceChild(newHamburger, hamburger);
+    if (navLinks && hamburger) {
+        navLinks.classList.remove('active');
+        hamburger.classList.remove('toggle');
+        resetLinkAnimations(links);
+    }
+}
 
-        newHamburger.addEventListener('click', () => {
-            // Toggle Nav
-            navLinks.classList.toggle('open');
+// Funktion zum Öffnen des Menüs
+function openMenu() {
+    const navLinks = document.querySelector('.nav-links');
+    const hamburger = document.querySelector('.hamburger');
+    const links = document.querySelectorAll('.nav-links li');
 
-            // Animate Links
-            links.forEach((link, index) => {
-                if (link.style.animation) {
-                    link.style.animation = '';
-                } else {
-                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-                }
-            });
-            newHamburger.classList.toggle('toggle');
-        });
+    if (navLinks && hamburger) {
+        navLinks.classList.add('active');
+        hamburger.classList.add('toggle');
 
-        // Close nav when clicking a link
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('open');
-                newHamburger.classList.remove('toggle');
-                links.forEach(link => {
-                    link.style.animation = '';
-                });
-            });
+        // Animate Links
+        links.forEach((link, index) => {
+            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
         });
     }
 }
 
-// Initialize navigation when DOM is ready OR when header is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    initNavigation();
-});
 
+// =================================================================
+// WICHTIGE ÄNDERUNG: Warte, bis der Header von loader.js geladen wurde
+// =================================================================
 document.addEventListener('headerLoaded', () => {
-    initNavigation();
+    // Hier ist sichergestellt, dass .nav-links und .hamburger existieren.
+    document.addEventListener('click', (e) => {
+        const navLinks = document.querySelector('.nav-links');
+
+        // 1. Handle hamburger click (TOGGLE)
+        if (e.target.closest('.hamburger')) {
+            // Wir prüfen, ob das Element existiert, obwohl wir es erwarten
+            if (navLinks && navLinks.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+            return;
+        }
+
+        // 2. Handle nav link click (CLOSE)
+        if (e.target.closest('.nav-links a')) {
+            // Die Verzögerung ist wichtig, da der Browser zur neuen Sektion scrollen muss
+            setTimeout(closeMenu, 100);
+            return;
+        }
+
+        // 3. Close menu if clicked outside
+        if (navLinks && navLinks.classList.contains('active') && !e.target.closest('.nav-links')) {
+            closeMenu();
+        }
+    });
 });
+// =================================================================
+
 
 // Audio Player
 let currentAudio = null;

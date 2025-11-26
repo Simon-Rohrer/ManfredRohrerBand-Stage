@@ -1,4 +1,3 @@
-/* TODO ENTFERNE */
 :root {
     --bg-body: #ffffff;
     --bg-section: #f9f9f9;
@@ -1098,8 +1097,11 @@ footer {
     color: var(--text-muted);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* =========================== */
+/* RESPONSIVE NAVIGATION   */
+/* =========================== */
+
+@media (max-width: 900px) {
     .navbar {
         padding: 15px 0;
     }
@@ -1108,21 +1110,27 @@ footer {
         padding: 0 20px;
     }
 
+    /* Das Menü selbst */
     .nav-links {
         position: fixed;
-        right: 0;
-        top: 0;
-        height: 100vh;
-        background-color: #ffffff;
+        top: 70px;
+        /* Höhe der Navbar beachten */
+        right: -100%;
+        /* Wichtig: Nutzt 'right' statt 'transform' */
+        width: 70%;
+        height: calc(100vh - 70px);
+        background: #fff;
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 70%;
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
-        justify-content: center;
+        justify-content: flex-start;
+        /* Eher oben starten statt center */
+        padding-top: 40px;
+        gap: 20px;
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        /* Passend zur Property 'right' */
         z-index: 999;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     }
 
     .nav-links li {
@@ -1130,15 +1138,18 @@ footer {
         margin: 15px 0;
     }
 
-    .nav-links.open {
-        transform: translateX(0%);
+    /* Der Zustand, wenn JS "active" hinzufügt */
+    .nav-links.active {
+        right: 0;
     }
 
+    /* Der Button */
     .hamburger {
         display: flex;
         z-index: 1001;
     }
 
+    /* Animation zum X */
     .hamburger.toggle .line1 {
         transform: rotate(-45deg) translate(-5px, 6px);
     }
@@ -1151,6 +1162,7 @@ footer {
         transform: rotate(45deg) translate(-5px, -6px);
     }
 
+    /* Animation für die Links (aus deinem JS) */
     @keyframes navLinkFade {
         from {
             opacity: 0;
@@ -1161,47 +1173,6 @@ footer {
             opacity: 1;
             transform: translateX(0);
         }
-    }
-
-    .hero-content h1 {
-        font-size: 3.5rem;
-    }
-
-    .about-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .about-image {
-        order: -1;
-    }
-}
-
-/* =========================== */
-/*     RESPONSIVE NAVIGATION   */
-/* =========================== */
-
-@media (max-width: 900px) {
-    .nav-links {
-        position: fixed;
-        top: 70px;
-        right: -100%;
-        width: 70%;
-        height: calc(100vh - 70px);
-        background: #fff;
-        flex-direction: column;
-        gap: 20px;
-        padding: 40px;
-        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
-        z-index: 999;
-    }
-
-    .nav-links.active {
-        right: 0;
-    }
-
-    .hamburger {
-        display: flex;
     }
 }
 
@@ -1230,6 +1201,10 @@ footer {
 
     .about-text h2 {
         text-align: center;
+    }
+
+    .about-image {
+        order: -1;
     }
 }
 
