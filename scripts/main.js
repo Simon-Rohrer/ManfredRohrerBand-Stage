@@ -1,78 +1,46 @@
+//TODO ENTFERNE
+// Navigation - Wait for DOM to be ready (including dynamically loaded header)
 const service_id = "service_cxgpf5t";
 const template_id = "template_k0cb54w";
 
-// Funktion zum Zurücksetzen der Link-Animationen
-function resetLinkAnimations(links) {
-    links.forEach(link => {
-        link.style.animation = '';
-    });
-}
-
-// Funktion zum Schließen des Menüs
-function closeMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    const hamburger = document.querySelector('.hamburger');
-    const links = document.querySelectorAll('.nav-links li');
-
-    if (navLinks && hamburger) {
-        navLinks.classList.remove('active');
-        hamburger.classList.remove('toggle');
-        resetLinkAnimations(links);
-    }
-}
-
-// Funktion zum Öffnen des Menüs
-function openMenu() {
-    const navLinks = document.querySelector('.nav-links');
-    const hamburger = document.querySelector('.hamburger');
-    const links = document.querySelectorAll('.nav-links li');
-
-    if (navLinks && hamburger) {
-        navLinks.classList.add('active');
-        hamburger.classList.add('toggle');
-
-        // Animate Links
-        links.forEach((link, index) => {
-            link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-        });
-    }
-}
-
-
-// =================================================================
-// WICHTIGE ÄNDERUNG: Warte, bis der Header von loader.js geladen wurde
-// =================================================================
-document.addEventListener('headerLoaded', () => {
-    // Hier ist sichergestellt, dass .nav-links und .hamburger existieren.
-    document.addEventListener('click', (e) => {
+// Navigation - Using event delegation for dynamically loaded header
+document.addEventListener('click', (e) => {
+    // Handle hamburger click
+    if (e.target.closest('.hamburger')) {
         const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+        const links = document.querySelectorAll('.nav-links li');
 
-        // 1. Handle hamburger click (TOGGLE)
-        if (e.target.closest('.hamburger')) {
-            // Wir prüfen, ob das Element existiert, obwohl wir es erwarten
-            if (navLinks && navLinks.classList.contains('active')) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
-            return;
-        }
+        if (navLinks && hamburger) {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('toggle');
 
-        // 2. Handle nav link click (CLOSE)
-        if (e.target.closest('.nav-links a')) {
-            // Die Verzögerung ist wichtig, da der Browser zur neuen Sektion scrollen muss
-            setTimeout(closeMenu, 100);
-            return;
+            // Animate Links
+            links.forEach((link, index) => {
+                if (link.style.animation) {
+                    link.style.animation = '';
+                } else {
+                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                }
+            });
         }
+    }
 
-        // 3. Close menu if clicked outside
-        if (navLinks && navLinks.classList.contains('active') && !e.target.closest('.nav-links')) {
-            closeMenu();
+    // Handle nav link click (close menu)
+    if (e.target.closest('.nav-links a')) {
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+        const links = document.querySelectorAll('.nav-links li');
+
+        if (navLinks && hamburger) {
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('toggle');
+            links.forEach(link => {
+                link.style.animation = '';
+            });
         }
-    });
+    }
 });
-// =================================================================
-
 
 // Audio Player
 let currentAudio = null;
@@ -87,24 +55,59 @@ function formatTime(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
+// Funktion zur Simulation einer Waveform
+function generateBars(waveformElement, duration) {
+    // NOTE: waveformElement.innerHTML = ''; wurde entfernt. Das Clearen wird nun
+    // im togglePlay() vor der Generierung der Waveform vorgenommen, um die korrekte 
+    // Struktur des Fortschrittsbalkens zu gewährleisten.
+
+    // Wir generieren eine feste Anzahl von Balken (z.B. 100)
+    const numberOfBars = 100;
+
+    for (let i = 0; i < numberOfBars; i++) {
+        const bar = document.createElement('div');
+        bar.classList.add('waveform-bar');
+
+        // Simuliere zufällige Amplitude (Höhe) der Balken
+        // Die Höhe ist zufällig, wird aber zur Mitte hin stärker
+        const maxAmplitude = 0.9;
+        const randomness = 0.6; // Wie stark der Zufall wirkt
+        const centerProximity = 1 - Math.abs((i / (numberOfBars - 1)) - 0.5) * 2;
+
+        const baseHeight = (0.3 + centerProximity * 0.7) * maxAmplitude;
+        const height = baseHeight * (1 - randomness) + Math.random() * randomness * maxAmplitude;
+
+        // Skaliere auf die volle Höhe des Waveform-Containers (30px)
+        bar.style.height = `${Math.max(5, height * 100)}%`;
+
+        waveformElement.appendChild(bar);
+    }
+}
+
 function updateTimeline(track, audio) {
     const currentTime = audio.currentTime;
     const duration = audio.duration;
-    const progressFill = track.querySelector('.progress-fill');
-    const progressThumb = track.querySelector('.progress-thumb');
     const currentTimeEl = track.querySelector('.current-time');
+    const totalTimeEl = track.querySelector('.total-time');
 
-    // Update progress bar
-    const percentage = (currentTime / duration) * 100;
-    progressFill.style.width = `${percentage}%`;
+    // NEU: Element für den Waveform-Fortschritt
+    const waveformProgress = track.querySelector('.waveform-progress');
 
-    // Update thumb position
-    if (progressThumb) {
-        progressThumb.style.left = `${percentage}%`;
+    // Update progress
+    const percentage = (currentTime / duration); // Wert zwischen 0 und 1
+    const percentageString = `${percentage * 100}%`;
+
+    // Waveform-Fortschritt aktualisieren
+    if (waveformProgress) {
+        waveformProgress.style.width = percentageString;
     }
 
     // Update current time display
     currentTimeEl.textContent = formatTime(currentTime);
+
+    // Berechne die verbleibende Zeit
+    const remainingTime = duration - currentTime;
+    totalTimeEl.textContent = "-" + formatTime(remainingTime);
 }
 
 function togglePlay(btn) {
@@ -125,6 +128,15 @@ function togglePlay(btn) {
             clearInterval(updateInterval);
             updateInterval = null;
         }
+
+        // Waveform beim Stoppen/Zurücksetzen zurücksetzen
+        const currentWaveformContainer = currentTrack.querySelector('.waveform');
+        if (currentWaveformContainer) currentWaveformContainer.innerHTML = '';
+
+        const currentTimeEl = currentTrack.querySelector('.current-time');
+        if (currentTimeEl) currentTimeEl.textContent = '0:00';
+        const totalTimeEl = currentTrack.querySelector('.total-time');
+        if (totalTimeEl) totalTimeEl.textContent = '--:--';
     }
 
     // 2. If the clicked button was NOT playing, start the new track
@@ -143,11 +155,33 @@ function togglePlay(btn) {
                 currentBtn = btn;
                 currentTrack = track;
 
-                // Update total time when metadata is loaded
-                audio.addEventListener('loadedmetadata', () => {
+                // --- NEUE WAVEFORM INITIALISIERUNG ---
+                const waveformContainer = track.querySelector('.waveform');
+
+                // Initialisiere Waveform und setze die Balken, sobald Metadaten geladen sind
+                audio.addEventListener('loadedmetadata', function listener() {
+                    // 1. Container komplett leeren, um Basis-Balken zu generieren
+                    waveformContainer.innerHTML = '';
+
+                    // 2. Generiere die BASIS-Balken (Grau)
+                    generateBars(waveformContainer, audio.duration);
+
+                    // 3. Erstelle den Fortschritts-Container (Overlay)
+                    const waveformProgress = document.createElement('div');
+                    waveformProgress.classList.add('waveform-progress');
+                    waveformContainer.appendChild(waveformProgress);
+
+                    // 4. Generiere die Füll-Balken (Farbig) in das Progress-Element.
+                    generateBars(waveformProgress, audio.duration);
+
                     const totalTimeEl = track.querySelector('.total-time');
+                    // Setze die Dauer initial
                     totalTimeEl.textContent = formatTime(audio.duration);
+
+                    // Listener nach Ausführung entfernen
+                    audio.removeEventListener('loadedmetadata', listener);
                 });
+                // --- ENDE WAVEFORM INITIALISIERUNG ---
 
                 // Update timeline continuously
                 updateInterval = setInterval(() => {
@@ -166,11 +200,16 @@ function togglePlay(btn) {
                         clearInterval(updateInterval);
                         updateInterval = null;
                     }
-                    // Reset progress bar
-                    const progressFill = track.querySelector('.progress-fill');
-                    progressFill.style.width = '0%';
+                    // Reset progress bar (nur Zeiten)
                     const currentTimeEl = track.querySelector('.current-time');
                     currentTimeEl.textContent = '0:00';
+                    // Reset total time display back to '--:--'
+                    const totalTimeEl = track.querySelector('.total-time');
+                    totalTimeEl.textContent = '--:--';
+
+                    // NEU: Waveform beim Ende zurücksetzen
+                    const currentWaveformContainer = track.querySelector('.waveform');
+                    if (currentWaveformContainer) currentWaveformContainer.innerHTML = '';
                 };
             }).catch(err => {
                 console.error("Audio playback failed:", err);
@@ -188,10 +227,11 @@ function togglePlay(btn) {
     }
 }
 
-function seekTo(event, progressBar) {
+function seekTo(event, waveformContainer) {
     if (!currentAudio) return;
 
-    const rect = progressBar.getBoundingClientRect();
+    // Das waveformContainer Element ist jetzt das klickbare Ziel
+    const rect = waveformContainer.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
     const percentage = clickX / rect.width;
     const newTime = percentage * currentAudio.duration;
