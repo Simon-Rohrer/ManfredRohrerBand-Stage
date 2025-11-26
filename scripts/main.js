@@ -3,44 +3,65 @@
 const service_id = "service_cxgpf5t";
 const template_id = "template_k0cb54w";
 
+// Navigations-Links holen (wird für die Animation benötigt)
+const navLinks = document.querySelectorAll('.nav-links li');
+
+// Funktion zum Zurücksetzen der Animationen beim Schließen
+const resetNavLinkFade = (links) => {
+    links.forEach(link => {
+        link.style.animation = '';
+        link.classList.remove('fade'); // Wichtig: Falls die CSS-Klasse .fade verwendet wird
+    });
+}
+
+// Funktion zur Ausführung der Einschwebe-Animation beim Öffnen
+const navLinkFade = (links) => {
+    links.forEach((link, index) => {
+        // Fügt die CSS-Klasse .fade hinzu, um opacity: 1 zu setzen und die Keyframes zu aktivieren
+        link.classList.add('fade');
+
+        // Definiert die Animation mit einem Verzögerungswert, der auf dem Index basiert
+        // 0.5s Dauer, ease-in-out Timing, forwards Füllmodus, 0.3s Startverzögerung + Index-Offset
+        link.style.animation = `navLinkFade 0.5s ease-in-out forwards ${index / 7 + 0.3}s`;
+    });
+};
+
 // Navigation - Using event delegation for dynamically loaded header
 document.addEventListener('click', (e) => {
+    const navLinksContainer = document.querySelector('.nav-links');
+    const hamburger = document.querySelector('.hamburger');
+    const links = document.querySelectorAll('.nav-links li');
+
+    if (!navLinksContainer || !hamburger) return;
+
+
     // Handle hamburger click
     if (e.target.closest('.hamburger')) {
-        const navLinks = document.querySelector('.nav-links');
-        const hamburger = document.querySelector('.hamburger');
-        const links = document.querySelectorAll('.nav-links li');
 
-        if (navLinks && hamburger) {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('toggle');
+        navLinksContainer.classList.toggle('active');
+        hamburger.classList.toggle('toggle');
 
-            // Animate Links
-            links.forEach((link, index) => {
-                if (link.style.animation) {
-                    link.style.animation = '';
-                } else {
-                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
-                }
-            });
+        // Animation Logik
+        if (navLinksContainer.classList.contains('active')) {
+            // Menü öffnet sich -> Animation starten
+            navLinkFade(links);
+        } else {
+            // Menü schließt sich -> Animationen zurücksetzen
+            resetNavLinkFade(links);
         }
     }
 
     // Handle nav link click (close menu)
     if (e.target.closest('.nav-links a')) {
-        const navLinks = document.querySelector('.nav-links');
-        const hamburger = document.querySelector('.hamburger');
-        const links = document.querySelectorAll('.nav-links li');
 
-        if (navLinks && hamburger) {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('toggle');
-            links.forEach(link => {
-                link.style.animation = '';
-            });
-        }
+        navLinksContainer.classList.remove('active');
+        hamburger.classList.remove('toggle');
+
+        // Animationen beim Schließen zurücksetzen
+        resetNavLinkFade(links);
     }
 });
+
 
 // Audio Player
 let currentAudio = null;
@@ -49,189 +70,194 @@ let currentTrack = null;
 let updateInterval = null;
 
 function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
+    if (isNaN(seconds) || seconds < 0) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Funktion zur Simulation einer Waveform
-function generateBars(waveformElement, duration) {
-    // NOTE: waveformElement.innerHTML = ''; wurde entfernt. Das Clearen wird nun
-    // im togglePlay() vor der Generierung der Waveform vorgenommen, um die korrekte 
-    // Struktur des Fortschrittsbalkens zu gewährleisten.
-
-    // Wir generieren eine feste Anzahl von Balken (z.B. 100)
-    const numberOfBars = 100;
-
-    for (let i = 0; i < numberOfBars; i++) {
-        const bar = document.createElement('div');
-        bar.classList.add('waveform-bar');
-
-        // Simuliere zufällige Amplitude (Höhe) der Balken
-        // Die Höhe ist zufällig, wird aber zur Mitte hin stärker
-        const maxAmplitude = 0.9;
-        const randomness = 0.6; // Wie stark der Zufall wirkt
-        const centerProximity = 1 - Math.abs((i / (numberOfBars - 1)) - 0.5) * 2;
-
-        const baseHeight = (0.3 + centerProximity * 0.7) * maxAmplitude;
-        const height = baseHeight * (1 - randomness) + Math.random() * randomness * maxAmplitude;
-
-        // Skaliere auf die volle Höhe des Waveform-Containers (30px)
-        bar.style.height = `${Math.max(5, height * 100)}%`;
-
-        waveformElement.appendChild(bar);
-    }
-}
-
+// AKTUALISIERT: Nutzt progress-fill und progress-thumb
 function updateTimeline(track, audio) {
     const currentTime = audio.currentTime;
     const duration = audio.duration;
     const currentTimeEl = track.querySelector('.current-time');
-    const totalTimeEl = track.querySelector('.total-time');
+    // const totalTimeEl = track.querySelector('.total-time'); // Total time wird nur einmal in loadedmetadata gesetzt
 
-    // NEU: Element für den Waveform-Fortschritt
-    const waveformProgress = track.querySelector('.waveform-progress');
+    // NEU/WIEDERHERGESTELLT: Elemente für Progress Bar
+    const progressFill = track.querySelector('.progress-fill');
+    const progressThumb = track.querySelector('.progress-thumb');
 
     // Update progress
     const percentage = (currentTime / duration); // Wert zwischen 0 und 1
     const percentageString = `${percentage * 100}%`;
 
-    // Waveform-Fortschritt aktualisieren
-    if (waveformProgress) {
-        waveformProgress.style.width = percentageString;
+    // Fortschrittsbalken aktualisieren
+    if (progressFill) {
+        progressFill.style.width = percentageString;
+    }
+    if (progressThumb) {
+        progressThumb.style.left = percentageString;
     }
 
     // Update current time display
     currentTimeEl.textContent = formatTime(currentTime);
 
-    // Berechne die verbleibende Zeit
-    const remainingTime = duration - currentTime;
-    totalTimeEl.textContent = "-" + formatTime(remainingTime);
+    // Berechne die verbleibende Zeit (WIRD IM LOADEDMETADATA ODER ONENDED KORRIGIERT)
+    if (!isNaN(duration)) {
+        const remainingTime = duration - currentTime;
+        track.querySelector('.total-time').textContent = "-" + formatTime(remainingTime);
+    }
 }
 
+// AKTUALISIERT: Fehler in der Reset-Logik behoben
 function togglePlay(btn) {
     const track = btn.closest('.track');
     const src = track.getAttribute('data-src');
-    const isPlaying = btn.classList.contains('playing');
+    const wasPlaying = btn.classList.contains('playing'); // <--- NEU: Zustand vor dem Reset speichern
 
-    // 1. Stop any currently playing audio
+    // 1. Wenn der Button geklickt wird UND er bereits spielte, stoppen wir ihn nur.
+    if (wasPlaying) {
+        // Logik zum Stoppen, wenn der aktuell spielende Button erneut geklickt wird
+        if (currentAudio && currentAudio !== null) {
+            currentAudio.pause();
+
+            // UI-Reset-Logik (muss auf currentTrack zugreifen, bevor es auf null gesetzt wird)
+            if (currentTrack) {
+                const progressFill = currentTrack.querySelector('.progress-fill');
+                const progressThumb = currentTrack.querySelector('.progress-thumb');
+                if (progressFill) progressFill.style.width = '0%';
+                if (progressThumb) progressThumb.style.left = '0%';
+
+                const currentTimeEl = currentTrack.querySelector('.current-time');
+                if (currentTimeEl) currentTimeEl.textContent = '0:00';
+                const totalTimeEl = currentTrack.querySelector('.total-time');
+                if (totalTimeEl && !isNaN(currentAudio.duration)) {
+                    totalTimeEl.textContent = formatTime(currentAudio.duration);
+                }
+
+                currentBtn.textContent = '▶';
+                currentBtn.classList.remove('playing');
+                currentTrack.classList.remove('active-track');
+            }
+
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+
+            currentAudio.currentTime = 0; // Reset to start
+            currentAudio = null;
+            currentBtn = null;
+            currentTrack = null;
+        }
+        return; // <--- WICHTIG: Hier beenden, um Doppelausführung zu verhindern
+    }
+
+    // 2. Stop any OTHER currently playing audio (Zustand eines anderen Tracks)
     if (currentAudio && currentAudio !== null) {
         currentAudio.pause();
-        currentAudio.currentTime = 0; // Reset to start
-        if (currentBtn) {
+
+        // UI-Reset-Logik des alten Tracks
+        if (currentTrack) {
+            const progressFill = currentTrack.querySelector('.progress-fill');
+            const progressThumb = currentTrack.querySelector('.progress-thumb');
+            if (progressFill) progressFill.style.width = '0%';
+            if (progressThumb) progressThumb.style.left = '0%';
+
+            const currentTimeEl = currentTrack.querySelector('.current-time');
+            if (currentTimeEl) currentTimeEl.textContent = '0:00';
+            const totalTimeEl = currentTrack.querySelector('.total-time');
+            if (totalTimeEl && !isNaN(currentAudio.duration)) {
+                totalTimeEl.textContent = formatTime(currentAudio.duration);
+            }
+
             currentBtn.textContent = '▶';
             currentBtn.classList.remove('playing');
-            currentBtn.closest('.track').classList.remove('active-track');
+            currentTrack.classList.remove('active-track');
         }
+
         if (updateInterval) {
             clearInterval(updateInterval);
             updateInterval = null;
         }
 
-        // Waveform beim Stoppen/Zurücksetzen zurücksetzen
-        const currentWaveformContainer = currentTrack.querySelector('.waveform');
-        if (currentWaveformContainer) currentWaveformContainer.innerHTML = '';
-
-        const currentTimeEl = currentTrack.querySelector('.current-time');
-        if (currentTimeEl) currentTimeEl.textContent = '0:00';
-        const totalTimeEl = currentTrack.querySelector('.total-time');
-        if (totalTimeEl) totalTimeEl.textContent = '--:--';
-    }
-
-    // 2. If the clicked button was NOT playing, start the new track
-    if (!isPlaying) {
-        // Create new audio instance
-        if (src) {
-            const audio = new Audio(src);
-            audio.volume = 0.5; // Set a reasonable default volume
-
-            audio.play().then(() => {
-                btn.textContent = '⏸';
-                btn.classList.add('playing');
-                track.classList.add('active-track');
-
-                currentAudio = audio;
-                currentBtn = btn;
-                currentTrack = track;
-
-                // --- NEUE WAVEFORM INITIALISIERUNG ---
-                const waveformContainer = track.querySelector('.waveform');
-
-                // Initialisiere Waveform und setze die Balken, sobald Metadaten geladen sind
-                audio.addEventListener('loadedmetadata', function listener() {
-                    // 1. Container komplett leeren, um Basis-Balken zu generieren
-                    waveformContainer.innerHTML = '';
-
-                    // 2. Generiere die BASIS-Balken (Grau)
-                    generateBars(waveformContainer, audio.duration);
-
-                    // 3. Erstelle den Fortschritts-Container (Overlay)
-                    const waveformProgress = document.createElement('div');
-                    waveformProgress.classList.add('waveform-progress');
-                    waveformContainer.appendChild(waveformProgress);
-
-                    // 4. Generiere die Füll-Balken (Farbig) in das Progress-Element.
-                    generateBars(waveformProgress, audio.duration);
-
-                    const totalTimeEl = track.querySelector('.total-time');
-                    // Setze die Dauer initial
-                    totalTimeEl.textContent = formatTime(audio.duration);
-
-                    // Listener nach Ausführung entfernen
-                    audio.removeEventListener('loadedmetadata', listener);
-                });
-                // --- ENDE WAVEFORM INITIALISIERUNG ---
-
-                // Update timeline continuously
-                updateInterval = setInterval(() => {
-                    updateTimeline(track, audio);
-                }, 100);
-
-                // Reset UI when audio ends
-                audio.onended = () => {
-                    btn.textContent = '▶';
-                    btn.classList.remove('playing');
-                    track.classList.remove('active-track');
-                    currentAudio = null;
-                    currentBtn = null;
-                    currentTrack = null;
-                    if (updateInterval) {
-                        clearInterval(updateInterval);
-                        updateInterval = null;
-                    }
-                    // Reset progress bar (nur Zeiten)
-                    const currentTimeEl = track.querySelector('.current-time');
-                    currentTimeEl.textContent = '0:00';
-                    // Reset total time display back to '--:--'
-                    const totalTimeEl = track.querySelector('.total-time');
-                    totalTimeEl.textContent = '--:--';
-
-                    // NEU: Waveform beim Ende zurücksetzen
-                    const currentWaveformContainer = track.querySelector('.waveform');
-                    if (currentWaveformContainer) currentWaveformContainer.innerHTML = '';
-                };
-            }).catch(err => {
-                console.error("Audio playback failed:", err);
-                alert("Playback failed. Please check console.");
-            });
-        } else {
-            console.error("No audio source found for this track.");
-        }
-    } else {
-        // If it WAS playing, we just paused/stopped it in step 1.
-        // So we just clear the state.
+        currentAudio.currentTime = 0; // Reset to start
         currentAudio = null;
         currentBtn = null;
         currentTrack = null;
     }
+
+
+    // 3. Start the new track (dieser Block wird nur erreicht, wenn kein oder ein anderer Track spielte)
+    if (src) {
+        const audio = new Audio(src);
+        audio.volume = 0.5;
+
+        audio.play().then(() => {
+            btn.textContent = '⏸';
+            btn.classList.add('playing');
+            track.classList.add('active-track');
+
+            currentAudio = audio;
+            currentBtn = btn;
+            currentTrack = track;
+
+            audio.addEventListener('loadedmetadata', function listener() {
+                const totalTimeEl = track.querySelector('.total-time');
+                if (!isNaN(audio.duration)) {
+                    totalTimeEl.textContent = "-" + formatTime(audio.duration);
+                } else {
+                    totalTimeEl.textContent = "--:--";
+                }
+                const currentTimeEl = track.querySelector('.current-time');
+                if (currentTimeEl) currentTimeEl.textContent = '0:00';
+                audio.removeEventListener('loadedmetadata', listener);
+            });
+
+            updateInterval = setInterval(() => {
+                updateTimeline(track, audio);
+            }, 100);
+
+            // Reset UI when audio ends
+            audio.onended = () => {
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+                track.classList.remove('active-track');
+
+                const progressFill = track.querySelector('.progress-fill');
+                const progressThumb = track.querySelector('.progress-thumb');
+                if (progressFill) progressFill.style.width = '0%';
+                if (progressThumb) progressThumb.style.left = '0%';
+
+                const currentTimeEl = track.querySelector('.current-time');
+                if (currentTimeEl) currentTimeEl.textContent = '0:00';
+                const totalTimeEl = track.querySelector('.total-time');
+                if (totalTimeEl && !isNaN(audio.duration)) {
+                    totalTimeEl.textContent = formatTime(audio.duration);
+                }
+
+                currentAudio = null;
+                currentBtn = null;
+                currentTrack = null;
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                    updateInterval = null;
+                }
+            };
+        }).catch(err => {
+            console.error("Audio playback failed:", err);
+            alert("Playback failed. Please check console.");
+        });
+    } else {
+        console.error("No audio source found for this track.");
+    }
 }
 
-function seekTo(event, waveformContainer) {
-    if (!currentAudio) return;
+// WIEDERHERGESTELLT: Zielt auf das Progress-Bar-Element ab
+function seekTo(event, progressBarElement) {
+    if (!currentAudio || isNaN(currentAudio.duration)) return;
 
-    // Das waveformContainer Element ist jetzt das klickbare Ziel
-    const rect = waveformContainer.getBoundingClientRect();
+    const rect = progressBarElement.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
     const percentage = clickX / rect.width;
     const newTime = percentage * currentAudio.duration;
@@ -239,6 +265,7 @@ function seekTo(event, waveformContainer) {
     currentAudio.currentTime = newTime;
     updateTimeline(currentTrack, currentAudio);
 }
+
 
 // Lightbox and Hero Slideshow - Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -250,9 +277,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Make functions global so they can be called from HTML onclick attributes
         window.openLightbox = function (element) {
             const img = element.querySelector('img');
-            lightboxImg.src = img.src;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+            // FIX: Prüfen, ob `img` existiert
+            if (img) {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            }
         };
 
         window.closeLightbox = function () {
@@ -266,7 +296,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.closeLightbox();
             }
         });
+
+        // Close lightbox on click outside image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                window.closeLightbox();
+            }
+        });
     }
+
+    // NEU: Event-Delegation für die Play-Buttons im Audio-Player
+    document.querySelector('.audio-list')?.addEventListener('click', (e) => {
+        const playBtn = e.target.closest('.play-btn');
+        if (playBtn) {
+            togglePlay(playBtn);
+        }
+
+        // WIEDERHERGESTELLT: Event-Delegation für Seeking auf dem Progress-Bar-Element
+        const progressBar = e.target.closest('.progress-bar');
+        if (progressBar) {
+            if (currentTrack && progressBar.closest('.track') === currentTrack) {
+                seekTo(e, progressBar);
+            }
+        }
+    });
 
     // Hero Slideshow
     const slides = document.querySelectorAll('.hero-bg .slide');
@@ -278,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (slides.length > 0 && dotsContainer && prevBtn && nextBtn) {
         // Initialize Dots
+        dotsContainer.innerHTML = ''; // Ensure container is empty
         slides.forEach((_, index) => {
             const dot = document.createElement('div');
             dot.classList.add('dot');
@@ -335,12 +389,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Clean up outgoing slide styles after transition (optional but good for state)
             setTimeout(() => {
-                if (direction === 'prev') {
-                    // For prev, outgoing needs to stay at right (100%), which is default for non-active
-                    outgoingSlide.style.transform = '';
-                } else {
-                    outgoingSlide.classList.remove('exit');
-                    outgoingSlide.style.transform = 'translateX(-100%)'; // Keep it at left until reused
+                outgoingSlide.classList.remove('exit');
+                // Set non-active slides back to their default non-active position (right side)
+                if (!outgoingSlide.classList.contains('active')) {
+                    outgoingSlide.style.transform = 'translateX(100%)';
                 }
             }, 1200); // Match transition duration
 
@@ -383,6 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (galleryPages.length > 0 && galleryDotsContainer && galleryPrev && galleryNext) {
         // Create dots
+        galleryDotsContainer.innerHTML = ''; // Ensure container is empty
         galleryPages.forEach((_, index) => {
             const dot = document.createElement('div');
             dot.classList.add('gallery-dot');
@@ -392,6 +445,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const galleryDots = document.querySelectorAll('.gallery-dot');
+
+        // Initial state
+        galleryPages.forEach((page, index) => {
+            if (index === 0) {
+                page.classList.add('active');
+            } else {
+                page.classList.remove('active');
+            }
+        });
+
 
         function goToGalleryPage(index) {
             if (index === currentGalleryPage) return;
@@ -430,6 +493,15 @@ const eventTypeSelect = document.getElementById('event-type');
 const otherEventGroup = document.getElementById('other-event-group');
 
 if (eventTypeSelect && otherEventGroup) {
+    // Initial check (falls "other" im HTML vorausgewählt ist)
+    if (eventTypeSelect.value === 'other') {
+        otherEventGroup.style.display = 'block';
+        document.getElementById('other-event').required = true;
+    } else {
+        otherEventGroup.style.display = 'none';
+        document.getElementById('other-event').required = false;
+    }
+
     eventTypeSelect.addEventListener('change', (e) => {
         if (e.target.value === 'other') {
             otherEventGroup.style.display = 'block';
@@ -441,7 +513,7 @@ if (eventTypeSelect && otherEventGroup) {
     });
 }
 
-if (bookingForm) {
+if (bookingForm && typeof emailjs !== 'undefined') {
     bookingForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -479,6 +551,12 @@ if (bookingForm) {
 
                 bookingForm.reset();
 
+                // Setzt das "Other Event" Feld zurück
+                if (eventTypeSelect && otherEventGroup) {
+                    otherEventGroup.style.display = 'none';
+                    document.getElementById('other-event').required = false;
+                }
+
                 setTimeout(() => {
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
@@ -504,7 +582,12 @@ if (bookingForm) {
                 }, 3000);
             });
     });
+} else if (bookingForm) {
+    console.warn("EmailJS library not loaded. Form submission will not work.");
+    // Optional: Formular-Fallback oder Fehlermeldung
 }
+
+
 // Member Slider Logic
 document.addEventListener('DOMContentLoaded', () => {
     const prevBtns = document.querySelectorAll('.member-slider-prev');

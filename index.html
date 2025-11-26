@@ -1,4 +1,3 @@
-<!-- TODO ENTFERNE -->
 <!DOCTYPE html>
 <html lang="de">
 
@@ -17,10 +16,8 @@
 
 <body>
 
-    <!-- Navigation -->
     <div id="header-placeholder"></div>
 
-    <!-- Hero Section -->
     <header class="hero" id="home">
         <div class="hero-bg">
             <img type="image/jpeg" src="assets/images/bandPhotos/DSC01385.jpg" alt="Band Photo 1" class="slide active">
@@ -39,7 +36,6 @@
         </div>
     </header>
 
-    <!-- About Section -->
     <section id="about" class="section about">
         <div class="container">
             <div class="about-grid">
@@ -56,12 +52,10 @@
         </div>
     </section>
 
-    <!-- Members Section -->
     <section id="members" class="section members">
         <div class="container">
             <h2>THE SQUAD</h2>
             <div class="members-grid">
-                <!-- Member 1: Silas - Drummer -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/silas/DSC01204.jpg" alt="Silas" class="active">
@@ -79,7 +73,6 @@
                             Hall und schreibt aktuell seine Bachelorarbeit.</p>
                     </div>
                 </div>
-                <!-- Member 2: Andy - Bassist -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/andy/DSC01338.jpg" alt="Andy" class="active">
@@ -95,7 +88,6 @@
                             voices, Andreas Volz und der Manfred Rohrer Band.</p>
                     </div>
                 </div>
-                <!-- Member 3: Chris - Synth -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/chris/DSC01275.jpg" alt="Chris" class="active">
@@ -110,7 +102,6 @@
                         <p>-</p>
                     </div>
                 </div>
-                <!-- Member 4: Ruwen - Piano -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/bandPhotos/DSC01545.jpg" alt="Ruwen" class="active">
@@ -133,7 +124,6 @@
                             die Musik.</p>
                     </div>
                 </div>
-                <!-- Member 5: Günter - Acoustic Guitar -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/guenther/DSC01392.jpg" alt="Günther" class="active">
@@ -147,7 +137,6 @@
                         <p>-</p>
                     </div>
                 </div>
-                <!-- Member 6: Manfred - Electric Guitar -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/manfred/DSC01195.jpg" alt="Manfred" class="active">
@@ -165,7 +154,6 @@
                             Höhe.</p>
                     </div>
                 </div>
-                <!-- Member 7: Myriam - Vocals -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/myriam/DSC01391.jpg" alt="Myriam" class="active">
@@ -188,7 +176,6 @@
                             tätig.</p>
                     </div>
                 </div>
-                <!-- Member 8: Bea - Vocals -->
                 <div class="member-card">
                     <div class="member-img">
                         <img src="assets/images/members/bea/DSC00722.jpg" alt="Bea" class="active">
@@ -212,14 +199,13 @@
         </div>
     </section>
 
-    <!-- Audio Section -->
     <section id="music" class="section music">
         <div class="container">
             <h2>LATEST TRACKS</h2>
             <div class="audio-list">
                 <div class="track" data-src="assets/audio/Back_to_Black.mp3">
                     <div class="track-main">
-                        <div class="play-btn" onclick="togglePlay(this)">▶</div>
+                        <div class="play-btn">▶</div>
                         <div class="track-info">
                             <span class="track-title">Back to Black</span>
                             <span class="track-artist">Manfred Rohrer Band</span>
@@ -239,7 +225,7 @@
                 </div>
                 <div class="track" data-src="assets/audio/Change_the_World.mp3">
                     <div class="track-main">
-                        <div class="play-btn" onclick="togglePlay(this)">▶</div>
+                        <div class="play-btn">▶</div>
                         <div class="track-info">
                             <span class="track-title">Change the World</span>
                             <span class="track-artist">Manfred Rohrer Band</span>
@@ -259,7 +245,7 @@
                 </div>
                 <div class="track" data-src="assets/audio/Rolling_in_the_Deep.mp3">
                     <div class="track-main">
-                        <div class="play-btn" onclick="togglePlay(this)">▶</div>
+                        <div class="play-btn">▶</div>
                         <div class="track-info">
                             <span class="track-title">Rolling in the Deep</span>
                             <span class="track-artist">Manfred Rohrer Band</span>
@@ -279,7 +265,7 @@
                 </div>
                 <div class="track" data-src="assets/audio/Stayin_Alive.mp3">
                     <div class="track-main">
-                        <div class="play-btn" onclick="togglePlay(this)">▶</div>
+                        <div class="play-btn">▶</div>
                         <div class="track-info">
                             <span class="track-title">Stayin Alive</span>
                             <span class="track-artist">Manfred Rohrer Band</span>
@@ -293,12 +279,13 @@
                                 <div class="progress-fill"></div>
                                 <div class="progress-thumb"></div>
                             </div>
+                            <span class="total-time">--:--</span>
                         </div>
                     </div>
                 </div>
                 <div class="track" data-src="assets/audio/Still_Got_The_Blues.mp3">
                     <div class="track-main">
-                        <div class="play-btn" onclick="togglePlay(this)">▶</div>
+                        <div class="play-btn">▶</div>
                         <div class="track-info">
                             <span class="track-title">Still Got The Blues</span>
                             <span class="track-artist">Manfred Rohrer Band</span>
@@ -312,6 +299,7 @@
                                 <div class="progress-fill"></div>
                                 <div class="progress-thumb"></div>
                             </div>
+                            <span class="total-time">--:--</span>
                         </div>
                     </div>
                 </div>
@@ -319,12 +307,10 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
     <section id="gallery" class="section gallery">
         <div class="container">
             <h2>Gallery</h2>
             <div class="gallery-slider-wrapper">
-                <!-- Page 1 -->
                 <div class="gallery-page active">
                     <div class="gallery-grid">
                         <div class="gallery-item" onclick="openLightbox(this)">
@@ -347,7 +333,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Page 2 -->
                 <div class="gallery-page">
                     <div class="gallery-grid">
                         <div class="gallery-item" onclick="openLightbox(this)">
@@ -371,7 +356,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Gallery Controls -->
             <div class="gallery-controls">
                 <button class="gallery-prev">&#10094;</button>
                 <div class="gallery-dots"></div>
@@ -380,13 +364,11 @@
         </div>
     </section>
 
-    <!-- Lightbox -->
     <div id="lightbox" class="lightbox" onclick="closeLightbox()">
         <span class="close-btn">&times;</span>
         <img class="lightbox-content" id="lightbox-img">
     </div>
 
-    <!-- Video Section -->
     <section id="video" class="section video-section">
         <div class="container">
             <h2>LIVE IN ACTION</h2>
@@ -399,7 +381,6 @@
             <p class="video-caption">Konzert Recap - Manfred Rohrer Band</p>
         </div>
     </section>
-    <!-- Contact Section -->
     <section id="contact" class="section contact">
         <div class="container">
             <h2>BOOKING</h2>
@@ -442,10 +423,8 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <div id="footer-placeholder"></div>
 
-    <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function () {

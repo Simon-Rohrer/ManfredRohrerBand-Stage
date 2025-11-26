@@ -1,8 +1,10 @@
+/* TODO ENTFERNE */
 :root {
     --bg-body: #ffffff;
     --bg-section: #f9f9f9;
     --bg-card: #ffffff;
     --text-main: #1a1a1a;
+    /* Dies ist fast Schwarz */
     --text-muted: #666666;
     --accent-primary: #2d3436;
     /* Dark Slate */
@@ -126,6 +128,7 @@ img {
     left: 0;
     width: 100%;
     padding: 20px 0;
+    /* Angepasst für Konsistenz */
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
     z-index: 1000;
@@ -173,16 +176,29 @@ img {
     color: var(--text-main);
     position: relative;
     padding-bottom: 5px;
+
+    /* NEU: Flexbox verwenden, um den Inhalt zu zentrieren und den Strich darunter zu steuern */
+    display: inline-flex;
+    /* Wichtig: Nur so breit wie der Inhalt */
+    align-items: center;
+    /* Vertikal zentrieren */
+    justify-content: center;
+    /* Horizontal zentrieren */
 }
 
 .nav-links a::after {
     content: '';
     position: absolute;
-    width: 0;
     height: 2px;
     bottom: 0;
     left: 0;
+    /* Strich beginnt links */
     background-color: var(--text-main);
+
+    /* NEU: Initial 0% Breite (von links nach rechts wachsend) */
+    width: 0%;
+
+    /* NEU: Übergang für die Breite */
     transition: width 0.3s ease;
 }
 
@@ -191,6 +207,7 @@ img {
 }
 
 .nav-links a:hover::after {
+    /* NEU: Beim Hovern auf 100% Breite skalieren */
     width: 100%;
 }
 
@@ -199,6 +216,8 @@ img {
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
+    z-index: 1001;
+    /* Hinzugefügt */
 }
 
 .hamburger span {
@@ -206,6 +225,8 @@ img {
     height: 2px;
     background: var(--text-main);
     transition: var(--transition);
+    transform-origin: 1px;
+    /* Hinzugefügt für Rotation */
 }
 
 /* Hero Section */
@@ -385,11 +406,7 @@ img {
     gap: 40px;
 }
 
-@media (max-width: 900px) {
-    .member-card {
-        width: calc((100% - 40px) / 2);
-    }
-}
+/* Regeln für < 900px sind jetzt im zusammengefassten Block */
 
 @media (max-width: 600px) {
     .member-card {
@@ -561,6 +578,7 @@ img {
     cursor: pointer;
     margin-right: 20px;
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
 .play-btn:hover {
@@ -578,7 +596,9 @@ img {
 }
 
 .track-info {
-    flex: 1;
+    flex: 0 1 200px;
+    margin-right: 20px;
+    flex-shrink: 0;
 }
 
 .track-title {
@@ -586,6 +606,9 @@ img {
     font-weight: 600;
     font-size: 1rem;
     color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-artist {
@@ -593,58 +616,9 @@ img {
     color: var(--text-muted);
 }
 
-/* --- WAVEFORM VISUALIZATION --- */
+/* --- PROGRESS BAR VISUALIZATION (REVERTED) --- */
 
-.waveform {
-    flex-grow: 1;
-    /* Nimmt den verfügbaren Platz im track-main ein */
-    height: 30px;
-    /* Höhe der Waveform */
-    background-color: var(--bg-section);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    /* Wichtig, um die Balken innerhalb der Timeline zu halten */
-    position: relative;
-    cursor: pointer;
-}
-
-.waveform-bar {
-    width: 2px;
-    /* Breite jedes Balkens */
-    height: 100%;
-    margin-right: 1px;
-    background-color: var(--border-color);
-    /* Graue Farbe für nicht gespielte Balken */
-    transition: none;
-    /* Keine CSS-Transitionen, da JS die Höhe steuert */
-    flex-shrink: 0;
-}
-
-.waveform-progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 0;
-    /* Wird von JS gesteuert */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    border-radius: 4px;
-}
-
-.waveform-progress .waveform-bar {
-    background-color: var(--accent-primary);
-    /* Akzentfarbe für bereits gespielte Balken */
-}
-
-.duration {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
+/* Removed: .waveform, .waveform-bar, .waveform-progress */
 
 /* Timeline Controls */
 .timeline {
@@ -652,6 +626,7 @@ img {
     align-items: center;
     gap: 12px;
     flex: 1;
+    /* Nimmt den verfügbaren Platz im track-main ein */
 }
 
 .current-time,
@@ -718,57 +693,13 @@ img {
     background-color: var(--bg-section);
 }
 
-.gallery-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.gallery-item {
-    flex: 1 1 300px;
-    max-width: 500px;
-    height: 300px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    border-radius: 8px;
-}
-
-/* Specific Layouts for 3 and 4 items (Desktop/Tablet) */
-@media (min-width: 601px) {
-
-    /* If exactly 3 items: 2 top, 1 bottom */
-    .gallery-item:first-child:nth-last-child(3),
-    .gallery-item:first-child:nth-last-child(3)~.gallery-item {
-        flex-basis: calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
-
-    /* If exactly 4 items: 2 top, 2 bottom */
-    .gallery-item:first-child:nth-last-child(4),
-    .gallery-item:first-child:nth-last-child(4)~.gallery-item {
-        flex-basis: calc(50% - 20px);
-        max-width: calc(50% - 20px);
-    }
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.gallery-item:hover img {
-    transform: scale(1.05);
-}
-
-/* Gallery Slider */
 .gallery-slider-wrapper {
     position: relative;
     overflow: hidden;
-    min-height: 650px;
+    max-width: 1000px;
+    /* Hinzugefügt für bessere Kontrolle */
+    margin: 0 auto 30px;
+    min-height: 300px;
 }
 
 .gallery-page {
@@ -776,13 +707,43 @@ img {
     width: 100%;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .gallery-page.active {
     position: relative;
     opacity: 1;
     visibility: visible;
+}
+
+.gallery-grid {
+    display: grid;
+    /* Zu Grid geändert für Flexibilität */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    padding-top: 100%;
+    /* 1:1 Aspektverhältnis */
+}
+
+.gallery-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
 }
 
 .gallery-controls {
@@ -891,23 +852,20 @@ img {
     box-shadow: var(--shadow-lg);
     background: #000000;
     position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 Aspect Ratio */
+    height: 0;
 }
 
 .video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
     cursor: pointer;
-}
-
-.video-container video::-webkit-media-controls-panel {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.video-container video::-webkit-media-controls-play-button,
-.video-container video::-webkit-media-controls-volume-slider,
-.video-container video::-webkit-media-controls-timeline {
-    filter: brightness(1.2);
 }
 
 .video-caption {
@@ -934,15 +892,28 @@ img {
     border-radius: 12px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
+    display: grid;
+    /* Hinzugefügt */
+    grid-template-columns: 1fr 1fr;
+    /* Hinzugefügt */
+    gap: 20px;
+    /* Hinzugefügt */
 }
 
 .form-group {
-    margin-bottom: 24px;
+    margin-bottom: 0;
+    /* Angepasst */
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+    /* Hinzugefügt */
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    /* Angepasst */
     font-weight: 700;
     color: var(--accent-secondary);
     font-size: 0.8rem;
@@ -954,7 +925,8 @@ img {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px;
+    /* Angepasst */
     background: #f8f9fa;
     border: 1px solid var(--border-color);
     color: var(--text-main);
@@ -980,92 +952,28 @@ img {
     box-shadow: 0 0 0 4px rgba(45, 52, 54, 0.1);
 }
 
-/* Date Input Styling */
-.form-group input[type="date"] {
-    padding: 14px 16px;
-    font-size: 1rem;
-    cursor: pointer;
-    position: relative;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-    color: var(--text-main);
-    background: #f8f9fa;
-    border-radius: 6px;
-    transition: var(--transition);
-    appearance: none;
-    -webkit-appearance: none;
-    display: block;
-    width: 100%;
+.form-group textarea {
+    resize: vertical;
 }
 
-.form-group input[type="date"]:hover,
-.form-group input[type="date"]:focus {
-    background: #ffffff;
-    border-color: var(--accent-primary);
+/* Date Input Styling korrigiert, um kürzere Version zu verwenden */
+.form-group input[type="date"] {
+    cursor: pointer;
+    background: #f8f9fa;
+    color: var(--text-main);
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
 }
 
 .form-group input[type="date"]::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    font-size: 1.6rem;
-    padding: 10px;
-    margin-left: 10px;
-    opacity: 0.6;
-    transition: var(--transition);
     filter: brightness(0.4);
+    transition: filter 0.3s ease;
 }
 
-.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
-    opacity: 1;
-    background-color: rgba(45, 52, 54, 0.06);
-    border-radius: 6px;
-    filter: brightness(0.2);
-}
-
-/* Firefox date input */
-.form-group input[type="date"]::-moz-calendar-picker-indicator {
-    cursor: pointer;
-    font-size: 1.6rem;
-    padding: 10px;
-    opacity: 0.6;
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit {
-    padding: 0;
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-    padding: 0;
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit-text {
-    padding: 0 6px;
-    color: var(--text-muted);
-    font-weight: 400;
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit-month-field,
-.form-group input[type="date"]::-webkit-datetime-edit-day-field,
-.form-group input[type="date"]::-webkit-datetime-edit-year-field {
-    padding: 6px 8px;
-    border-radius: 4px;
-    transition: var(--transition);
-    font-weight: 400;
-    color: var(--text-main);
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit-month-field:hover,
-.form-group input[type="date"]::-webkit-datetime-edit-day-field:hover,
-.form-group input[type="date"]::-webkit-datetime-edit-year-field:hover {
-    background-color: rgba(45, 52, 54, 0.06);
-}
-
-.form-group input[type="date"]::-webkit-datetime-edit-month-field:focus,
-.form-group input[type="date"]::-webkit-datetime-edit-day-field:focus,
-.form-group input[type="date"]::-webkit-datetime-edit-year-field:focus {
-    background-color: rgba(45, 52, 54, 0.1);
-    outline: none;
+.form-group input[type="date"]:hover::-webkit-calendar-picker-indicator {
+    filter: brightness(0);
 }
 
 /* Placeholder styling when empty */
@@ -1077,16 +985,17 @@ img {
     width: 100%;
 }
 
-
-
 .cta-btn.full-width {
     width: 100%;
     text-align: center;
+    margin-top: 10px;
+    /* Hinzugefügt */
 }
 
 /* Footer */
 footer {
-    padding: 60px 0;
+    padding: 40px 0;
+    /* Angepasst */
     background: var(--bg-section);
     border-top: 1px solid var(--border-color);
     text-align: center;
@@ -1106,7 +1015,8 @@ footer {
 
 .socials a {
     margin: 0 15px;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    /* Angepasst */
     color: var(--text-muted);
     transition: var(--transition);
 }
@@ -1135,11 +1045,17 @@ footer {
     color: var(--text-muted);
 }
 
+
 /* =========================== */
-/* RESPONSIVE NAVIGATION   */
+/* RESPONSIVE NAVIGATION & LAYOUTS (ALLE < 900px) */
+/* =========================== */
+
+/* =========================== */
+/* RESPONSIVE NAVIGATION & LAYOUTS (ALLE < 900px) */
 /* =========================== */
 
 @media (max-width: 900px) {
+
     .navbar {
         padding: 15px 0;
     }
@@ -1148,90 +1064,125 @@ footer {
         padding: 0 20px;
     }
 
-    /* Das Menü selbst */
-    .nav-links {
-        position: fixed;
-        top: 70px;
-        /* Höhe der Navbar beachten */
-        right: -100%;
-        /* Wichtig: Nutzt 'right' statt 'transform' */
-        width: 70%;
-        height: calc(100vh - 70px);
-        background: #fff;
+    /* --------------------------
+     * 1. Hamburger Icon Basis
+     * -------------------------- */
+    .hamburger {
+        cursor: pointer;
+        z-index: 20;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        /* Eher oben starten statt center */
-        padding-top: 40px;
-        gap: 20px;
-        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
-        /* Passend zur Property 'right' */
-        z-index: 999;
+        justify-content: space-around;
+        width: 30px;
+        height: 25px;
+        transition: transform 0.3s ease-in-out;
     }
 
-    .nav-links li {
-        opacity: 0;
-        margin: 15px 0;
+    .hamburger span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: var(--text-main);
+        /* Schwarz */
+        border-radius: 10px;
+        transition: all 0.3s ease-in-out;
+        transform-origin: left;
     }
 
-    /* Der Zustand, wenn JS "active" hinzufügt */
-    .nav-links.active {
-        right: 0;
-    }
-
-    /* Der Button */
-    .hamburger {
-        display: flex;
-        z-index: 1001;
-    }
-
-    /* Animation zum X */
+    /* --------------------------
+     * 2. Hamburger Icon: Toggle-Zustand (von JS)
+     * -------------------------- */
     .hamburger.toggle .line1 {
-        transform: rotate(-45deg) translate(-5px, 6px);
+        transform: rotate(45deg) translate(0px, 0px);
     }
 
     .hamburger.toggle .line2 {
         opacity: 0;
+        transform: translateX(10px);
     }
 
     .hamburger.toggle .line3 {
-        transform: rotate(45deg) translate(-5px, -6px);
+        transform: rotate(-45deg) translate(0px, 0px);
     }
 
-    /* Animation für die Links (aus deinem JS) */
-    @keyframes navLinkFade {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    /* --------------------------
+     * 3. Navigations-Links (Menü-Container)
+     * -------------------------- */
+    .nav-links {
+        position: fixed;
+        right: 0;
+        top: 81px;
+        width: 70%;
+        height: 100vh;
+        padding: 30px 20px;
+        background-color: var(--bg-body);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transform: translateX(100%);
+        transition: transform 0.5s ease-in-out;
+        z-index: 999;
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+        border-left: 1px solid var(--border-color);
+        overflow-y: auto;
     }
-}
 
-@media (max-width: 900px) {
+    /* Zustand, wenn JS "active" hinzufügt */
+    .nav-links.active {
+        transform: translateX(0);
+    }
+
+    .nav-links li {
+        opacity: 0;
+        /* Wichtig für die Start-Animation */
+        margin: 15px 0;
+        width: 100%;
+        text-align: center;
+        /* NEU: Startpunkt der Animation (Rechts außerhalb der finalen Position) */
+        transform: translateX(50px);
+    }
+
+    .nav-links li a {
+        display: block;
+        padding: 10px 0;
+        /* NEU: Schriftgröße reduziert */
+        font-size: 1.1rem;
+        color: var(--text-main) !important;
+    }
+
+    .nav-links li a.cta-btn-small {
+        border-color: var(--accent-primary);
+        color: var(--accent-primary) !important;
+        background: transparent;
+    }
+
+    .nav-links li a.cta-btn-small:hover {
+        background: var(--accent-primary);
+        color: #ffffff !important;
+    }
+
+    /* NEUE REGEL FÜR DIE ANIMATION: Wird von JS gesetzt, um die Animation zu starten */
+    .nav-links li.fade {
+        /* Nötig, um die Animation zu starten, da wir transform und opacity im JS setzen */
+        /* Die @keyframes Definition macht die eigentliche Arbeit */
+    }
+
+    /* --------------------------
+     * 4. Layout Anpassungen (RESPONSIVE HEADINGS & ABOUT)
+     * -------------------------- */
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
     .hero-content h1 {
         font-size: 3.2rem;
     }
-}
 
-@media (max-width: 600px) {
-    .hero-content h1 {
-        font-size: 2.2rem;
-    }
-
-    .hero-content p {
-        font-size: 1rem;
-    }
-}
-
-/* ABOUT */
-@media (max-width: 900px) {
+    /* ABOUT */
     .about-grid {
         grid-template-columns: 1fr;
         text-align: center;
@@ -1244,24 +1195,19 @@ footer {
     .about-image {
         order: -1;
     }
-}
 
-/* MEMBERS */
-@media (max-width: 1200px) {
+    /* MEMBERS */
     .member-card {
         width: calc((100% - 40px) / 2);
     }
 }
 
-@media (max-width: 700px) {
-    .member-card {
-        width: 100%;
-    }
 
-    .member-img {
-        height: 260px;
-    }
-}
+/* HEADINGS RESPONSIVE */
+/* Dieser Block wurde in den 900px-Block verschoben und ist jetzt leer */
+
+/* ABOUT RESPONSIVE */
+/* Dieser Block wurde in den 900px-Block verschoben und ist jetzt leer */
 
 @media (max-width: 700px) {
 
@@ -1275,43 +1221,34 @@ footer {
         gap: 15px;
     }
 
+    /* KORREKTUREN FÜR MUSIC TRACKS AUF MOBILE */
+    .track-info {
+        flex: 1 100%;
+        /* Nimmt jetzt volle Breite ein */
+        margin-right: 0;
+    }
+
     .timeline {
-        flex-direction: column;
-        gap: 6px;
+        /* Bleibt in einer Reihe */
+        flex-direction: row;
+        gap: 10px;
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+    }
+
+    .current-time,
+    .total-time {
+        min-width: 35px;
+    }
+
+    /* MEMBERS */
+    .member-card {
         width: 100%;
     }
-}
 
-@media (max-width: 600px) {
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .gallery-item {
-        height: 220px;
-    }
-}
-
-@media (max-width: 800px) {
-    .video-container {
-        border-radius: 6px;
-    }
-}
-
-@media (max-width: 600px) {
-    .booking-form {
-        padding: 25px;
-    }
-}
-
-/* HEADINGS RESPONSIVE */
-@media (max-width: 900px) {
-    h1 {
-        font-size: 2.5rem;
-    }
-
-    h2 {
-        font-size: 2rem;
+    .member-img {
+        height: 260px;
     }
 }
 
@@ -1322,5 +1259,43 @@ footer {
 
     h2 {
         font-size: 1.6rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-item {
+        height: 220px;
+    }
+
+    .booking-form {
+        padding: 25px;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================== */
+/* ANIMATIONEN */
+/* =========================== */
+
+/* Animation für das nacheinander Einschweben der Links */
+@keyframes navLinkFade {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }

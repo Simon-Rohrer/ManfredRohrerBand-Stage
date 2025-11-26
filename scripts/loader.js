@@ -1,4 +1,4 @@
-//TODO ENTFERNE
+
 // Component Loader - Lädt Header und Footer in alle Seiten
 document.addEventListener('DOMContentLoaded', function () {
     // Header laden
