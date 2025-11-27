@@ -493,6 +493,13 @@ const eventTypeSelect = document.getElementById('event-type');
 const otherEventGroup = document.getElementById('other-event-group');
 
 if (eventTypeSelect && otherEventGroup) {
+    // Set minimum date to today
+    const dateInput = document.getElementById('event-date');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+
     // Initial check (falls "other" im HTML vorausgewählt ist)
     if (eventTypeSelect.value === 'other') {
         otherEventGroup.style.display = 'block';

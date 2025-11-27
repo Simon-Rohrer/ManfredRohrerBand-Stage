@@ -1111,14 +1111,16 @@ footer {
     .nav-links {
         position: fixed;
         right: 0;
-        top: 81px;
-        width: 70%;
-        height: 100vh;
-        padding: 30px 20px;
+        top: 71px;
+        width: 45%;
+        height: 75vh;
+        padding: 10px;
+        padding-top: 50px;
+        padding-bottom: 50px;
         background-color: var(--bg-body);
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         transform: translateX(100%);
         transition: transform 0.5s ease-in-out;
         z-index: 999;
@@ -1135,7 +1137,7 @@ footer {
     .nav-links li {
         opacity: 0;
         /* Wichtig für die Start-Animation */
-        margin: 15px 0;
+        margin: 10px;
         width: 100%;
         text-align: center;
         /* NEU: Startpunkt der Animation (Rechts außerhalb der finalen Position) */
@@ -1144,7 +1146,7 @@ footer {
 
     .nav-links li a {
         display: block;
-        padding: 10px 0;
+        padding: 2px 0;
         /* NEU: Schriftgröße reduziert */
         font-size: 1.1rem;
         color: var(--text-main) !important;
