@@ -346,10 +346,6 @@ img {
     letter-spacing: -1px;
 }
 
-.hero-content p {
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
 .hero-content .cta-btn {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
